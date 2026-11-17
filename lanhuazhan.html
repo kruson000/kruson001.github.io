@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>展会选址与兰花驯化大棚数据调研</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<script src="https://fastly.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root{
+  --paper:#f5f4ef;
+  --card:#ffffff;
+  --ink:#1d2620;
+  --ink-soft:#4c5750;
+  --ink-faint:#7c857e;
+  --line:#dcd9cf;
+  --line-soft:#e8e6de;
+  --pine:#2e5e43;
+  --pine-deep:#1f3d2d;
+  --pine-mist:#e7efe9;
+  --ochre:#b06a2f;
+  --ochre-mist:#f4e9dc;
+  --slate:#46586b;
+  --shadow:0 1px 2px rgba(29,38,32,.05),0 8px 24px -16px rgba(29,38,32,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:15px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+h1,h2,h3,.serif{font-family:"Noto Serif SC","Songti SC","SimSun",serif}
+
+/* ===== 报告头 ===== */
+.masthead{background:var(--pine-deep);color:#eef2ee;padding:56px 0 48px;position:relative;overflow:hidden}
+.masthead::after{content:"";position:absolute;right:-80px;top:-80px;width:340px;height:340px;border:1px solid rgba(255,255,255,.08);border-radius:50%}
+.masthead::before{content:"";position:absolute;right:-20px;top:40px;width:220px;height:220px;border:1px solid rgba(255,255,255,.06);border-radius:50%}
+.kicker{font-size:12.5px;letter-spacing:.32em;color:#9fc0ac;text-transform:uppercase;margin-bottom:18px}
+.masthead h1{font-size:34px;font-weight:700;line-height:1.35;letter-spacing:.02em;margin-bottom:14px}
+.masthead .sub{color:#c4d2c8;font-size:14.5px;max-width:680px}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:26px;font-size:13px;color:#a9bdb0}
+.meta-row span b{color:#e7efe9;font-weight:500}
+
+/* ===== 导航 ===== */
+.nav{position:sticky;top:0;z-index:50;background:rgba(245,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0}
+.nav a{font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 14px;border-radius:2px;white-space:nowrap}
+.nav a:hover{background:var(--pine-mist);color:var(--pine)}
+
+/* ===== 区块 ===== */
+section{padding:52px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+.sec-no{font-family:"Noto Serif SC",serif;font-size:15px;color:var(--ochre);font-weight:600}
+.sec-head h2{font-size:26px;font-weight:700;color:var(--ink)}
+.sec-desc{color:var(--ink-faint);font-size:13.5px;margin-bottom:28px;padding-left:42px}
+h3.block-title{font-size:17px;font-weight:600;margin:34px 0 14px;padding-left:12px;border-left:3px solid var(--pine)}
+
+/* ===== 摘要数字 ===== */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:36px}
+.hstat{background:var(--card);padding:22px 20px}
+.hstat .num{font-family:"Noto Serif SC",serif;font-size:27px;font-weight:700;color:var(--pine);line-height:1.2}
+.hstat .num small{font-size:14px;font-weight:500;color:var(--ink-soft);margin-left:2px}
+.hstat .lab{font-size:12.5px;color:var(--ink-faint);margin-top:6px}
+
+/* ===== 表格 ===== */
+.table-card{background:var(--card);border:1px solid var(--line);border-radius:3px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th,td{padding:11px 14px;text-align:left;font-size:13.5px;border-bottom:1px solid var(--line-soft);vertical-align:top;word-break:break-word}
+thead th{background:var(--pine);color:#eef2ee;font-weight:500;font-size:13px;border-bottom:none}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:#faf9f5}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td .tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:2px;background:var(--pine-mist);color:var(--pine)}
+td .tag.warn{background:var(--ochre-mist);color:var(--ochre)}
+.muted{color:var(--ink-faint)}
+.up{color:var(--pine);font-weight:500}
+.down{color:var(--ochre);font-weight:500}
+
+/* ===== 档案栅格 ===== */
+.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:8px}
+.profile-item{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:16px 18px}
+.profile-item .k{font-size:12px;color:var(--ink-faint);margin-bottom:5px;letter-spacing:.04em}
+.profile-item .v{font-size:14.5px;color:var(--ink);font-weight:500}
+
+/* ===== 图表 ===== */
+.chart-card{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:20px 18px 10px;box-shadow:var(--shadow);margin-bottom:20px}
+.chart{width:100%;height:340px}
+.chart-note{font-size:12px;color:var(--ink-faint);padding:4px 4px 10px}
+
+/* ===== 提示框 ===== */
+.note-box{background:var(--pine-mist);border-left:3px solid var(--pine);padding:14px 18px;font-size:13.5px;color:var(--pine-deep);border-radius:0 3px 3px 0;margin-bottom:20px}
+.note-box.warn{background:var(--ochre-mist);border-left-color:var(--ochre);color:#7a4a20}
+.note-box b{font-weight:600}
+
+/* ===== 子板块：客流 / 营收 ===== */
+.sub-flag{display:flex;align-items:center;gap:12px;margin:38px 0 16px}
+.sub-flag .bar{width:34px;height:34px;border-radius:3px;display:flex;align-items:center;justify-content:center;background:var(--pine);color:#fff}
+.sub-flag.rev .bar{background:var(--ochre)}
+.sub-flag .bar svg{width:18px;height:18px}
+.sub-flag .t{font-family:"Noto Serif SC",serif;font-size:18px;font-weight:600}
+.sub-flag .t small{font-family:"Noto Sans SC",serif;font-size:12px;font-weight:400;color:var(--ink-faint);margin-left:8px}
+.model-tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:2px;background:#eef0ea;color:#6b7268;border:1px dashed #b9bdb0;margin-left:8px;vertical-align:middle}
+.real-tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:2px;background:var(--pine-mist);color:var(--pine);margin-left:8px;vertical-align:middle}
+.peak-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.peak-card{border:1px solid var(--line);border-radius:3px;padding:16px 18px;background:var(--card)}
+.peak-card.hi{border-top:3px solid var(--ochre)}
+.peak-card.lo{border-top:3px solid var(--slate)}
+.peak-card.avg{border-top:3px solid var(--pine)}
+.peak-card .k{font-size:12px;color:var(--ink-faint);margin-bottom:6px}
+.peak-card .v{font-family:"Noto Serif SC",serif;font-size:22px;font-weight:700;color:var(--ink)}
+.peak-card .v small{font-size:12px;font-family:"Noto Sans SC",serif;font-weight:400;color:var(--ink-soft)}
+.peak-card .d{font-size:11.5px;color:var(--ink-faint);margin-top:4px}
+@media (max-width:820px){.peak-grid{grid-template-columns:1fr}}
+
+/* ===== 来源 ===== */
+.src-list{font-size:13px;color:var(--ink-soft)}
+.src-list li{margin-bottom:9px;padding-left:4px;list-style:none;position:relative;padding-left:18px}
+.src-list li::before{content:"";position:absolute;left:2px;top:11px;width:6px;height:6px;background:var(--ochre);border-radius:50%}
+.src-list a{color:var(--slate);word-break:break-all}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:28px 0 48px;color:var(--ink-faint);font-size:12.5px}
+
+@media (max-width:820px){
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .profile-grid{grid-template-columns:1fr}
+  .masthead h1{font-size:27px}
+  .sec-desc{padding-left:0}
+  table{font-size:12.5px}
+  th,td{padding:9px 10px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 报告头 ===== -->
+<header class="masthead">
+  <div class="wrap">
+    <div class="kicker">Venue &amp; Greenhouse Research</div>
+    <h1>展会选址与兰花驯化大棚<br>数据调研报告</h1>
+    <p class="sub">围绕无门票景区、售票类景区与设施农业大棚三类场景，梳理人流量、营收、门票及棚型容量数据，为 2027 年兰花展会选址与兰花存放驯化提供量化依据。</p>
+    <div class="meta-row">
+      <span>调研日期：<b>2026 年 11 月 17 日</b></span>
+      <span>数据区间：<b>2023 — 2026 年（以近三年为主）</b></span>
+      <span>数据性质：<b>公开渠道整理，口径见文末说明</b></span>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="num">4490<small>万人次</small></div><div class="lab">昆明池开园累计客流（至 2025 年中）</div></div>
+      <div class="hstat"><div class="num">12.44<small>亿元</small></div><div class="lab">昆明池开园累计营收</div></div>
+      <div class="hstat"><div class="num">2<small>亿元+</small></div><div class="lab">赳赳大秦 2025 全年票房</div></div>
+      <div class="hstat"><div class="num">19<small>万㎡</small></div><div class="lab">秦岭花世界已建成温室面积</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== 导航 ===== -->
+<div class="nav">
+  <div class="wrap nav-inner">
+    <a href="#sec1">板块一 · 昆明池</a>
+    <a href="#sec2">板块二 · 法门寺</a>
+    <a href="#sec3">板块二 · 赳赳大秦</a>
+    <a href="#sec4">板块三 · 大棚数据</a>
+    <a href="#sec5">容量测算</a>
+    <a href="#sec6">来源与口径</a>
+  </div>
+</div>
+
+<!-- ===== 板块一：昆明池 ===== -->
+<section id="sec1">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">板块一</span><h2>昆明池 · 七夕公园（无门票景区）</h2></div>
+    <p class="sec-desc">免费开放型城市水利景区，收入依赖商业、停车、活动与赛事等市场化业态，而非门票。</p>
+
+    <h3 class="block-title">基础档案</h3>
+    <div class="profile-grid">
+      <div class="profile-item"><div class="k">开放时间 / 等级</div><div class="v">2017 年 9 月 28 日开放，国家 4A 级景区（2021 年评定）</div></div>
+      <div class="profile-item"><div class="k">收费模式</div><div class="v">免门票，免费开放</div></div>
+      <div class="profile-item"><div class="k">一期（七夕公园）规模</div><div class="v">占地 2255 余亩，其中水域 707 亩、景观 1548 亩</div></div>
+      <div class="profile-item"><div class="k">斗门水库整体规划</div><div class="v">规划水域 10.4 ㎢，总库容 5052 万 m³，库周 14.9 km，总投资 80.93 亿元</div></div>
+      <div class="profile-item"><div class="k">停车与交通</div><div class="v">5 个室外停车场、8000 个停车位；12 条公交线路接驳</div></div>
+      <div class="profile-item"><div class="k">运动配套</div><div class="v">环湖绿道 11.8 公里；连续三年承办西咸半程马拉松</div></div>
+    </div>
+
+    <!-- ========== 子板块 A：客流 ========== -->
+    <div class="sub-flag">
+      <span class="bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6m6 6V6m6 12v-9m6 9V4"/></svg></span>
+      <span class="t">客流数据<small>含高低峰值、节假日、日内时段、周与月分布</small></span>
+    </div>
+
+    <h3 class="block-title">客流高峰值、低峰值与平均值</h3>
+    <div class="peak-grid">
+      <div class="peak-card hi"><div class="k">高峰值（单日极端）</div><div class="v">16<small> 万人次</small></div><div class="d">官方披露单日峰值；2018 年初一曾达 8.54 万</div></div>
+      <div class="peak-card avg"><div class="k">典型节假日日均</div><div class="v">3.9 — 6.8<small> 万</small></div><div class="d">国庆日均约 3.89 万、春节日均 6.75 万</div></div>
+      <div class="peak-card lo"><div class="k">低峰值（淡季工作日）</div><div class="v">0.8 — 1.2<small> 万</small></div><div class="d">模型估算，非官方实测；全年日均约 1.6 万</div></div>
+    </div>
+
+    <h3 class="block-title">各节假日整体客流（实测）<span class="real-tag">官方/权威报道</span></h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:20%"><col style="width:14%"><col style="width:22%"><col style="width:22%"><col style="width:22%"></colgroup>
+        <thead><tr><th>节假日</th><th class="num">天数</th><th class="num">整体客流（万人次）</th><th class="num">日均（万人次）</th><th>同比 / 备注</th></tr></thead>
+        <tbody>
+          <tr><td>2024 国庆</td><td class="num">7</td><td class="num">超 35</td><td class="num">≈5.0</td><td>陕西热门景点前 5</td></tr>
+          <tr><td>2025 五一</td><td class="num">5</td><td class="num">27.84</td><td class="num">5.57</td><td>140 余场活动</td></tr>
+          <tr><td>2026 春节</td><td class="num">8</td><td class="num">54.00</td><td class="num">6.75</td><td><span class="up">客流 +7.6%</span>，全区第一</td></tr>
+          <tr><td>2026 清明</td><td class="num">3</td><td class="num">14.80</td><td class="num">4.93</td><td>—</td></tr>
+          <tr><td>2026 端午</td><td class="num">3</td><td class="num">8.40</td><td class="num">2.80</td><td>—</td></tr>
+          <tr><td>2026 国庆</td><td class="num">7</td><td class="num">27.22</td><td class="num">3.89</td><td><span class="up">客流 +36.9%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-card"><div id="chart-kunming" class="chart"></div>
+      <div class="chart-note">图为各节假日整体客流与日均客流对比，均为已公开实测数据。</div></div>
+
+    <h3 class="block-title">日内时段客流分布（典型节假日）<span class="model-tag">模型估算</span></h3>
+    <div class="chart-card"><div id="chart-km-hour" class="chart"></div>
+      <div class="chart-note">以 2026 春节日均 6.75 万人次为基数，按行业日内分布规律建模；免费景区存在午后、晚间"双峰"（19:00 前后夜游/打铁花）。</div></div>
+
+    <h3 class="block-title">周内客流分布（周一至周日）<span class="model-tag">模型估算</span></h3>
+    <div class="chart-card"><div id="chart-km-week" class="chart" style="height:300px"></div>
+      <div class="chart-note">周内呈"翘尾"特征，周末两天合计约占全周 45%；工作日客流相对平稳。</div></div>
+
+    <h3 class="block-title">月度 / 季节性客流分布<span class="model-tag">模型估算</span></h3>
+    <div class="chart-card"><div id="chart-km-month" class="chart"></div>
+      <div class="chart-note">以估算年均约 580 万人次为基数，按"三峰三谷"季节规律建模：2 月（春节）、5 月（五一）、10 月（国庆）为三大高峰，11—12 月为低谷。</div></div>
+
+    <!-- ========== 子板块 B：营收 ========== -->
+    <div class="sub-flag rev">
+      <span class="bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+      <span class="t">营收数据<small>免门票，收入来自商业、停车、活动与赛事</small></span>
+    </div>
+
+    <h3 class="block-title">累计营收与结构（开园至 2025 年中，官方复函）</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:34%"><col style="width:30%"><col style="width:36%"></colgroup>
+        <thead><tr><th>指标</th><th class="num">数值</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>累计营收</td><td class="num">12.44 亿元</td><td>2017.9 开园至 2025 年中</td></tr>
+          <tr><td>其中：市场化收入</td><td class="num">1.79 亿元</td><td>商业、活动等可自主经营部分</td></tr>
+          <tr><td>2024 年新业态新增营收</td><td class="num">1240 余万元</td><td>云汉商业街等业态贡献</td></tr>
+          <tr><td>2025 马拉松带动消费</td><td class="num">约 200 万元</td><td>赛事+消费嘉年华</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="block-title">分时段营收（已公开节点）</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:24%"><col style="width:26%"><col style="width:26%"><col style="width:24%"></colgroup>
+        <thead><tr><th>时段</th><th class="num">营收 / 收入</th><th>同比</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>2024 春节</td><td class="num muted">未单列绝对值</td><td><span class="up">收入 +70%</span></td><td>首届花灯节</td></tr>
+          <tr><td>2024 国庆</td><td class="num muted">未单列绝对值</td><td><span class="up">营收 +68%</span></td><td>—</td></tr>
+          <tr><td>2026 春节</td><td class="num muted">未单列绝对值</td><td><span class="up">营收 +11.1%</span></td><td>—</td></tr>
+          <tr><td>2026 端午</td><td class="num">198.6 万元</td><td class="muted">—</td><td>三天假期</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-box">
+      <b>客流与营收对照：</b>昆明池以"免门票换大客流"，节假日整体客流可达 8 万 — 54 万人次，但官方很少单列绝对营收，公开数据以同比增速为主。其变现依赖商业、停车、活动与赛事，单客变现强度弱于售票类项目——这是免费景区"客流大、直接收入不透明"的典型特征。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 板块二：法门寺 ===== -->
+<section id="sec2">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">板块二 · 售票类</span><h2>法门文化景区</h2></div>
+    <p class="sec-desc">国家 5A 级历史文化景区，以门票为核心收入，数据来自景区管委会历年部门决算，口径相对完整。</p>
+
+    <h3 class="block-title">基础档案</h3>
+    <div class="profile-grid">
+      <div class="profile-item"><div class="k">位置 / 等级</div><div class="v">宝鸡市扶风县，国家 5A 级景区</div></div>
+      <div class="profile-item"><div class="k">馆藏文物</div><div class="v">法门寺博物馆馆藏 2499 件（套），以唐代宫廷文物为主</div></div>
+      <div class="profile-item"><div class="k">门票（2026 年 4 月 20 日前）</div><div class="v">旺季 100 元 / 淡季 90 元</div></div>
+      <div class="profile-item"><div class="k">门票（2026 年 4 月 20 日起）</div><div class="v">旺季 78 元 / 淡季 58 元；电瓶车 20 元</div></div>
+    </div>
+
+    <!-- ========== 子板块 A：客流 ========== -->
+    <div class="sub-flag">
+      <span class="bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6m6 6V6m6 12v-9m6 9V4"/></svg></span>
+      <span class="t">客流数据<small>含高低峰值、年度、节假日、日内时段、周与月分布</small></span>
+    </div>
+
+    <h3 class="block-title">客流高峰值、低峰值与平均值</h3>
+    <div class="peak-grid">
+      <div class="peak-card hi"><div class="k">高峰值（春节初一）</div><div class="v">16.8 — 17<small> 万</small></div><div class="d">2025 春节 16.8 万、2026 超 17 万；2023 初一 13.6 万</div></div>
+      <div class="peak-card avg"><div class="k">全年日均</div><div class="v">≈2740<small> 人次</small></div><div class="d">按 2025 年约 100 万 / 365 天估算</div></div>
+      <div class="peak-card lo"><div class="k">低峰值（淡季工作日）</div><div class="v">≈1500 — 2000<small> 人</small></div><div class="d">模型估算，非官方实测；冬季开放时间缩短</div></div>
+    </div>
+
+    <h3 class="block-title">三年客流对比（管委会决算口径）<span class="real-tag">决算/宣传</span></h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:30%"><col style="width:24%"><col style="width:24%"></colgroup>
+        <thead><tr><th>年份</th><th class="num">接待游客（万人次）</th><th class="num">同比</th><th>客流目标达成</th></tr></thead>
+        <tbody>
+          <tr><td>2023</td><td class="num">97.68</td><td class="num muted">—</td><td><span class="tag">正常披露</span></td></tr>
+          <tr><td>2024</td><td class="num">87.00</td><td class="num down">−10.9%</td><td><span class="tag warn">目标 105 万，未达成</span></td></tr>
+          <tr><td>2025</td><td class="num">突破 100<small class="muted">（宣传约数）</small></td><td class="num up">+15% 左右</td><td><span class="tag">客流破百万</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-card"><div id="chart-famen" class="chart" style="height:320px"></div>
+      <div class="chart-note">2025 年为官方"突破 100 万"宣传口径（约数），图中按 100 万展示；2023、2024 为决算实际值。</div></div>
+
+    <h3 class="block-title">节假日 / 单日节点客流（实测）<span class="real-tag">官方/权威报道</span></h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:26%"><col style="width:30%"><col style="width:44%"></colgroup>
+        <thead><tr><th>节点</th><th>客流</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>2023 春节初一</td><td>13.6 万人次</td><td>当时创三年新高</td></tr>
+          <tr><td>2025 春节假期</td><td>16.8 万人次</td><td>全网预约、线上预售</td></tr>
+          <tr><td>2026 春节假期</td><td>超 17 万人次</td><td>大唐市集、民俗活动</td></tr>
+          <tr><td>2026 国庆假期</td><td>4.96 万人次</td><td>10 月 4 日单日超 1 万</td></tr>
+          <tr><td>高速法门寺出口</td><td>日均 15900 车次</td><td>为平日 1.8 倍，反映自驾客流</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="block-title">日内时段客流分布（典型旺季日）<span class="model-tag">模型估算</span></h3>
+    <div class="chart-card"><div id="chart-fm-hour" class="chart"></div>
+      <div class="chart-note">以旺季典型日约 2.1 万人次为基数，按售票景区早高峰规律建模；夏季 8:00—18:00 开放，旅行团集中在上午。</div></div>
+
+    <h3 class="block-title">周内客流分布（周一至周日）<span class="model-tag">模型估算</span></h3>
+    <div class="chart-card"><div id="chart-fm-week" class="chart" style="height:300px"></div>
+      <div class="chart-note">周内"翘尾"，周末显著高于工作日；黄金周内则呈"平山脊"式高位分布。</div></div>
+
+    <h3 class="block-title">月度 / 季节性客流分布<span class="model-tag">模型估算</span></h3>
+    <div class="chart-card"><div id="chart-fm-month" class="chart"></div>
+      <div class="chart-note">以 2025 年约 100 万人次为基数，按"三峰三谷"建模：2 月（春节）、10 月（国庆）、5 月（五一）为高峰，冬季及 6 月为低谷。</div></div>
+
+    <!-- ========== 子板块 B：营收 ========== -->
+    <div class="sub-flag rev">
+      <span class="bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+      <span class="t">营收数据<small>门票为核心，叠加电瓶车、文创等二次消费</small></span>
+    </div>
+
+    <h3 class="block-title">三年旅游收入对比（管委会决算口径）<span class="real-tag">决算实际值</span></h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:16%"><col style="width:24%"><col style="width:24%"><col style="width:36%"></colgroup>
+        <thead><tr><th>年份</th><th class="num">旅游收入（万元）</th><th class="num">人均旅游收入（元）</th><th>收入目标达成</th></tr></thead>
+        <tbody>
+          <tr><td>2023</td><td class="num">7479.96</td><td class="num">76.58</td><td><span class="tag">正常披露</span></td></tr>
+          <tr><td>2024</td><td class="num">6300.00</td><td class="num">72.41</td><td><span class="tag warn">目标 8000 万，未达成</span></td></tr>
+          <tr><td>2025</td><td class="num">5118.00</td><td class="num">≈51.18</td><td><span class="tag warn">目标 8000 万，未达成</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-card"><div id="chart-fm-rev" class="chart" style="height:320px"></div>
+      <div class="chart-note">旅游收入连续两年下滑（7479.96→6300→5118 万元），人均旅游收入同步走低；2025 人均按约 100 万客流估算。</div></div>
+
+    <h3 class="block-title">门票与二次消费、财务结构</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:30%"><col style="width:34%"><col style="width:36%"></colgroup>
+        <thead><tr><th>项目</th><th>数值</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>门票（2026.4.20 前）</td><td>旺季 100 / 淡季 90 元</td><td>核心收入来源</td></tr>
+          <tr><td>门票（2026.4.20 起）</td><td>旺季 78 / 淡季 58 元</td><td>降价引流；电瓶车 20 元</td></tr>
+          <tr><td>2024 博物馆文创销售</td><td>102.6 万元</td><td>二次消费尚处培育期</td></tr>
+          <tr><td>2025 化解到期债务</td><td>25101 万元</td><td>另争取专项债 1.14 亿元</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-box warn">
+      <b>客流与营收背离：</b>客流 2025 年重新破百万，但旅游收入连续两年下滑、人均消费从 76.58 元降至约 51 元，且 2026 年门票降价。管委会自评"产品结构单一、二次消费未形成规模"。这说明售票类项目即便客流恢复，也可能陷入"以价换量、增收不增利"的瓶颈。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 板块二：赳赳大秦 ===== -->
+<section id="sec3">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">板块二 · 售票类</span><h2>《赳赳大秦》史诗幻境演出</h2></div>
+    <p class="sec-desc">并非传统景区，而是按场次售票的驻场沉浸式演艺，以高上座率和高人均消费成为西咸新区文旅标杆。</p>
+
+    <h3 class="block-title">基础档案</h3>
+    <div class="profile-grid">
+      <div class="profile-item"><div class="k">首演 / 出品</div><div class="v">2024 年 9 月 27 日首演；陕文投出品，周莉亚、韩真导演</div></div>
+      <div class="profile-item"><div class="k">位置</div><div class="v">西咸新区沣东新城，秦阿房宫遗址东侧</div></div>
+      <div class="profile-item"><div class="k">剧场规模</div><div class="v">长 220 m × 宽 65 m，总建筑面积约 3.2 万 ㎡</div></div>
+      <div class="profile-item"><div class="k">舞台 / 坐席</div><div class="v">舞台 4393.403 ㎡（吉尼斯最大剧院舞台）；1500 个可移动坐席</div></div>
+      <div class="profile-item"><div class="k">演出时长 / 人员</div><div class="v">80 分钟；演职人员 200 余名</div></div>
+      <div class="profile-item"><div class="k">场次安排</div><div class="v">周二休演，日均 2 场、旺季 3 场</div></div>
+    </div>
+
+    <h3 class="block-title">票价体系</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:25%"><col style="width:25%"><col style="width:25%"><col style="width:25%"></colgroup>
+        <thead><tr><th>区域</th><th class="num">挂牌价（元）</th><th>区域</th><th class="num">挂牌价（元）</th></tr></thead>
+        <tbody>
+          <tr><td>C 区</td><td class="num">338</td><td>贵宾 A 区</td><td class="num">588</td></tr>
+          <tr><td>B 区</td><td class="num">388</td><td>尊享区</td><td class="num">688</td></tr>
+          <tr><td>A 区</td><td class="num">458</td><td>限时优惠</td><td class="num">C 区 258 元起</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="block-title">分阶段运营数据</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:18%"><col style="width:22%"><col style="width:22%"><col style="width:20%"><col style="width:18%"></colgroup>
+        <thead><tr><th>阶段</th><th class="num">演出场次</th><th class="num">观众（万人次）</th><th class="num">票房 / 收入</th><th>上座率</th></tr></thead>
+        <tbody>
+          <tr><td>2024 首演季<small class="muted">（9.27–12，约 3 月）</small></td><td class="num">80 余场</td><td class="num">超 14</td><td class="num muted">未单列全年</td><td class="muted">—</td></tr>
+          <tr><td>2025 全年</td><td class="num muted">—</td><td class="num">80</td><td class="num">票房超 2 亿元</td><td>96% 左右</td></tr>
+          <tr><td>2026 累计<small class="muted">（至 11 月）</small></td><td class="num">超 1000 场</td><td class="num">超 150</td><td class="num muted">—</td><td>95% 以上</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="block-title">关键节点（节假日）明细</h3>
+    <div class="table-card">
+      <table>
+        <colgroup"><col style="width:20%"><col style="width:16%"><col style="width:20%"><col style="width:22%"><col style="width:22%"></colgroup>
+        <thead><tr><th>节点</th><th class="num">场次</th><th class="num">观众（万人次）</th><th class="num">收入</th><th>同比 / 上座率</th></tr></thead>
+        <tbody>
+          <tr><td>2024 国庆</td><td class="num">14</td><td class="num">2.01</td><td class="num">351.27 万元</td><td class="muted">首演季</td></tr>
+          <tr><td>2025 春节</td><td class="num">14</td><td class="num">2.76</td><td class="num">575.47 万元</td><td>上座率 99.3%</td></tr>
+          <tr><td>2026 春节</td><td class="num">24</td><td class="num">3.60</td><td class="num muted">未单列</td><td><span class="up">观众 +72.4% / 营收 +108.6%</span></td></tr>
+          <tr><td>2026 清明</td><td class="num">8</td><td class="num">1.20</td><td class="num muted">—</td><td>上座率 99.3%</td></tr>
+          <tr><td>2026 端午</td><td class="num">—</td><td class="num">1.20</td><td class="num">287.3 万元</td><td><span class="up">营收 +14.7%</span></td></tr>
+          <tr><td>2026 国庆</td><td class="num">24</td><td class="num">3.51</td><td class="num muted">人均消费新区榜首</td><td class="muted">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-card">
+      <div id="chart-jiu" class="chart"></div>
+      <div class="chart-note">注：图为各节假日节点观众人次与收入对比；部分节点官方未公布收入绝对值，故收入柱仅展示已公开节点。</div>
+    </div>
+
+    <div class="note-box">
+      <b>观众结构与选址含义：</b>省外观众占比约 80%、海外观众约 10%，说明该项目具备跨区域引流能力，而非仅依赖本地客流。其高上座率（常年 95% 以上）与高人均消费（票价 338 — 688 元）验证了"强内容 + 售票制"的变现效率，可作为兰花展售票模式与客单价设计的正向参照。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 板块三：秦岭花世界大棚 ===== -->
+<section id="sec4">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">板块三</span><h2>西安秦岭花世界 · 大棚与驯化设施</h2></div>
+    <p class="sec-desc">用于兰花存放与驯化，需同时掌握园区家底、标准棚型尺寸、兰花环境要求与实际租赁条件。</p>
+
+    <h3 class="block-title">园区基础档案</h3>
+    <div class="profile-grid">
+      <div class="profile-item"><div class="k">运营主体 / 成立</div><div class="v">西安木禾林农业有限公司，2010 年成立</div></div>
+      <div class="profile-item"><div class="k">位置</div><div class="v">长安区黄良街道子午大道中段东侧</div></div>
+      <div class="profile-item"><div class="k">占地面积</div><div class="v">650 亩（约 43.3 万 ㎡）</div></div>
+      <div class="profile-item"><div class="k">总投资 / 温室面积</div><div class="v">累计投资 2.2 亿元；已建成连栋温室 19 万 ㎡</div></div>
+      <div class="profile-item"><div class="k">入驻主体</div><div class="v">花卉企业 / 经营户 260 — 280 余家，含龙头企业"大秦岭兰花"</div></div>
+      <div class="profile-item"><div class="k">经营与产能</div><div class="v">2021 年全园销售额 13 亿元、游客 200 万人次；年组培苗 200 万株、高档盆花 100 万株</div></div>
+    </div>
+
+    <h3 class="block-title">四类标准棚型尺寸规格（国家 / 地方标准综合）</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:19%"><col style="width:17%"><col style="width:16%"><col style="width:16%"><col style="width:16%"><col style="width:16%"></colgroup>
+        <thead><tr><th>棚型</th><th>跨度</th><th>长度</th><th>高度</th><th>单体面积</th><th>适用性</th></tr></thead>
+        <tbody>
+          <tr><td>单栋塑料大棚</td><td>8 — 12 m</td><td>≥ 60 m</td><td>脊高 3.5 — 4.5 m</td><td>≥ 667 ㎡（约 1 亩）</td><td>结构简单、成本低，环境调控弱</td></tr>
+          <tr><td>日光温室</td><td>10 — 16 m</td><td>80 — 100 m</td><td>脊高 ≥ 3.5 m，采光角 26 — 35°</td><td>≥ 600 ㎡</td><td>北方保温好，单坡面、依赖光照</td></tr>
+          <tr><td>大跨度外保温棚</td><td>16 — 24 m</td><td>≥ 80 m</td><td>脊高 5 — 7 m</td><td>视长度而定</td><td>空间开阔，适合规模化存放</td></tr>
+          <tr><td>连栋温室（塑料 / 玻璃 / PC）</td><td>单跨 8 — 12.8 m，开间 4 — 5 m</td><td>多跨拼接</td><td>天沟高：花卉育苗 ≥ 5 m、果菜 ≥ 6 m</td><td>整体 ≥ 2000 ㎡</td><td>环控最强，兰花驯化首选</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-box">
+      <b>连栋温室细分参数（Venlo 玻璃 / 纹洛式）：</b>常见跨度 8 / 9 / 9.6 / 12 / 12.8 m，开间 4 / 4.5 / 5 m，屋面角约 22 — 23°；花卉与育苗用途天沟（檐口）高度建议不低于 5 m，以保证立体栽培与通风。秦岭花世界已建成的 19 万 ㎡ 即以连栋温室为主。
+    </div>
+
+    <h3 class="block-title">兰花（蝴蝶兰）驯化环境要求</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:39%"><col style="width:39%"></colgroup>
+        <thead><tr><th>环境要素</th><th>指标要求</th><th>配套设施</th></tr></thead>
+        <tbody>
+          <tr><td>温室结构</td><td>热镀锌钢管、圆拱顶，跨度 6 — 12 m，檐高 ≥ 4 m</td><td>水泥地面，可移动栽培架</td></tr>
+          <tr><td>遮阳系统</td><td>双层活动遮阳：上层遮光率 75 — 90%，下层 65 — 75%</td><td>齿轮齿条传动遮阳网</td></tr>
+          <tr><td>温度</td><td>营养生长 22 — 30 ℃；催花阶段 16 — 25 ℃</td><td>暖风加温 + 湿帘风机降温</td></tr>
+          <tr><td>空气湿度</td><td>60 — 85%，小苗期建议 80% 以上</td><td>喷雾 / 加湿与内循环风机</td></tr>
+          <tr><td>光照强度</td><td>小苗 2000 — 10000 lux；中苗 1 — 2 万 lux；催花 2.5 — 3 万 lux</td><td>可调遮阳 + 补光</td></tr>
+          <tr><td>其他</td><td>湿帘外侧 40 目防虫网；气体内循环；水肥一体化</td><td>反渗透净水、栽培架高 0.6 — 0.8 m、宽 1.5 — 1.8 m、架间距 0.6 — 0.8 m</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="block-title">蝴蝶兰各生长阶段摆放密度（DB11/T 899 等标准）</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:20%"><col style="width:28%"><col style="width:22%"><col style="width:30%"></colgroup>
+        <thead><tr><th>阶段</th><th>容器 / 植架</th><th class="num">摆放密度（株 / ㎡）</th><th>阶段周期</th></tr></thead>
+        <tbody>
+          <tr><td>穴盘苗</td><td>128 穴盘</td><td class="num">800</td><td>1 — 2 个月</td></tr>
+          <tr><td>小苗</td><td>1.5 / 1.7 寸钵，50 孔架</td><td class="num">180 — 200</td><td>4.5 — 5.5 个月</td></tr>
+          <tr><td>中苗</td><td>2.5 / 2.8 寸钵，15 孔架</td><td class="num">65 — 80</td><td>3.5 — 4.5 个月</td></tr>
+          <tr><td>大苗</td><td>2.8 / 3.5 寸钵，15 / 12 孔架</td><td class="num">45 — 55</td><td>3.5 — 4.5 个月</td></tr>
+          <tr><td>成熟催花苗</td><td>2.8 / 3.5 寸钵，15 / 12 孔架</td><td class="num">40 — 45</td><td>4 — 5 个月</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 容量测算 ===== -->
+<section id="sec5">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">决策工具</span><h2>大棚兰花容量测算</h2></div>
+    <p class="sec-desc">按有效栽培面积 = 租赁面积 × 65%（扣除通道、设备与缓冲空间）估算，实际可据苗床布局调整。</p>
+
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:18%"><col style="width:18%"><col style="width:21%"><col style="width:21%"><col style="width:22%"></colgroup>
+        <thead><tr><th>租赁面积</th><th class="num">有效栽培面积（65%）</th><th class="num">小苗容量（190 株/㎡）</th><th class="num">大苗容量（50 株/㎡）</th><th class="num">催花苗容量（42.5 株/㎡）</th></tr></thead>
+        <tbody>
+          <tr><td>500 ㎡</td><td class="num">325 ㎡</td><td class="num">61750 株（约 6.18 万）</td><td class="num">16250 株（1.63 万）</td><td class="num">13813 株（1.38 万）</td></tr>
+          <tr><td>1000 ㎡</td><td class="num">650 ㎡</td><td class="num">123500 株（12.35 万）</td><td class="num">32500 株（3.25 万）</td><td class="num">27625 株（2.76 万）</td></tr>
+          <tr><td>2000 ㎡</td><td class="num">1300 ㎡</td><td class="num">247000 株（24.7 万）</td><td class="num">65000 株（6.5 万）</td><td class="num">55250 株（5.53 万）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-card">
+      <div id="chart-cap" class="chart" style="height:360px"></div>
+      <div class="chart-note">注：容量为基于标准摆放密度的理论值，实际受苗床架规格、通道宽度、花盆尺寸与混批存放影响，建议现场量测后修正。</div>
+    </div>
+
+    <h3 class="block-title">租赁实例与造价参考</h3>
+    <div class="table-card">
+      <table>
+        <colgroup><col style="width:26%"><col style="width:30%"><col style="width:44%"></colgroup>
+        <thead><tr><th>项目</th><th>价格 / 数据</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>秦岭花世界 1000 ㎡阳光大棚</td><td>5000 元 / 月（5 元 / ㎡ / 月，约 6 万元 / 年）</td><td>通水电，配办公室、直播间等，发布于租赁平台</td></tr>
+          <tr><td>秦岭花世界 500 ㎡普通仓库</td><td>价格面议</td><td>可作存放，环控条件需现场确认</td></tr>
+          <tr><td>一路之隔 · 西安鲜花港</td><td>24000 ㎡智能温室，蝴蝶兰年产 12 万成品</td><td>可作同区域产业与租金对照</td></tr>
+          <tr><td>玻璃智能温室（含全套环控）造价</td><td>2025 年约 4850 元 / ㎡，西北地区约 5120 元 / ㎡</td><td>行业报告口径，含环境控制；高配型约 7260 元 / ㎡</td></tr>
+          <tr><td>工程裸棚（骨架 + 覆盖）报价</td><td>约 881 — 2600 元 / ㎡</td><td>1688 工程报价，不含全套智能环控，与上一口径差异较大</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note-box warn">
+      <b>实地尽调清单（建议到场逐项确认）：</b>① 拟租棚的净跨、檐高、肩高与实际可用面积；② 内外遮阳、湿帘风机、加温设备是否完好及电费计价；③ 租金是否含物业、水电、供暖，租期与递增条款；④ 进出货通道、货车能否直达棚口；⑤ 周边是否有兰花企业（如大秦岭兰花）便于技术与物流协同。公开渠道的租金仅为个案，最终以园区招商报价为准。
+    </div>
+  </div>
+</section>
+
+<!-- ===== 来源与口径 ===== -->
+<section id="sec6">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">附录</span><h2>数据来源与口径说明</h2></div>
+    <p class="sec-desc">本报告全部数据来自公开渠道，未包含任何非公开或内部数据；不同来源口径存在差异，已在对应位置标注。</p>
+    <ul class="src-list">
+      <li>昆明池累计客流、营收、单日峰值、新业态数据：沣东新城管委会官方复函（2025 年 7 月），西咸新区政府信息公开栏目。</li>
+      <li>昆明池节假日客流与同比：西咸新区及沣东新城历年节假日文旅通报、西咸新区管委会官网、西安新闻网、光明日报等公开报道。</li>
+      <li>法门文化景区三年客流与收入：扶风县人民政府官网"部门决算专栏"《法门文化景区管理委员会 2023 / 2024 / 2025 年度部门决算》及绩效自评表。</li>
+      <li>法门寺门票价格：景区官方售票公告及主流票务平台公开价格；2026 年 4 月调价前后口径已分别标注。</li>
+      <li>赳赳大秦场次、观众、票房、上座率：陕文投公开信息、陕西省文旅厅新闻发布会、西咸新区管委会通报、央广网、澎湃新闻、央视财经等。</li>
+      <li>秦岭花世界园区数据：陕西省农业农村厅"长安花卉"专栏、园区公开报道、企查查 / 天眼查工商信息及租赁平台挂牌信息。</li>
+      <li>棚型尺寸：北京 DB11/T 2147、江苏 DB32、浙江 GP 系列、湖北与南阳设施农业技术规范等公开标准。</li>
+      <li>蝴蝶兰密度与环境：DB11/T 899《盆栽蝴蝶兰栽培技术规程》、DB46/T 362、GB/T 28683 等标准。</li>
+    </ul>
+    <div class="note-box" style="margin-top:24px">
+      <b>数据局限：</b>① 昆明池未公开完整分年度营收，2025 年部分节假日单景区数据缺失；② 法门寺 2025 年客流为"突破 100 万"宣传口径（约数），精确人次未在决算中单列；③ 赳赳大秦不同时点的累计观众（140 / 143 / 150 万）与收入（1.7 亿 / 2 亿）存在统计口径差异；④ 大棚租金为平台个案，不代表园区统一报价。以上均需在正式决策前通过官方渠道二次核实。
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    本报告为公开数据整理稿，仅供内部研究与选址参考，不构成投资建议。数据截至 2026 年 11 月 17 日，后续如官方发布更新，应以最新口径为准。
+  </div>
+</footer>
+
+<script>
+const PINE='#2e5e43', PINE_L='#7aa68c', OCHRE='#b06a2f', SLATE='#46586b', INK='#1d2620', GRID='#e8e6de';
+const FONT='"Noto Sans SC","PingFang SC",sans-serif';
+const baseTooltip={backgroundColor:'#1f3d2d',borderWidth:0,textStyle:{color:'#eef2ee',fontFamily:FONT,fontSize:12}};
+const charts=[];
+function make(id,opt){const el=document.getElementById(id);if(!el)return;const c=echarts.init(el);c.setOption(opt);charts.push(c);}
+
+/* 昆明池节假日客流（整体+日均） */
+make('chart-kunming',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'}},baseTooltip),
+  legend:{data:['整体客流','日均客流'],top:6,textStyle:{color:SLATE,fontSize:12},itemWidth:14,itemHeight:10},
+  grid:{left:48,right:20,top:48,bottom:48},
+  xAxis:{type:'category',data:['2024 国庆','2025 五一','2026 春节','2026 清明','2026 端午','2026 国庆'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE,fontSize:12,interval:0}},
+  yAxis:{type:'value',name:'万人次',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+  series:[
+    {name:'整体客流',type:'bar',data:[35,27.84,54,14.8,8.4,27.22],barWidth:'42%',
+      itemStyle:{color:PINE},label:{show:true,position:'top',color:PINE,fontSize:11}},
+    {name:'日均客流',type:'line',data:[5.0,5.57,6.75,4.93,2.8,3.89],smooth:true,
+      symbol:'circle',symbolSize:7,lineStyle:{color:OCHRE,width:2.2},itemStyle:{color:OCHRE}}
+  ]
+});
+
+/* 昆明池 · 日内时段（模型） */
+make('chart-km-hour',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:function(p){var h=[12,20,22,18,12,10,6];var i=p[0].dataIndex;
+      return p[0].name+' 时<br/>'+p[0].value.toLocaleString()+' 人次（占比 '+h[i]+'%）';}},baseTooltip),
+  grid:{left:56,right:20,top:30,bottom:40},
+  xAxis:{type:'category',data:['8-10','10-12','12-14','14-16','16-18','18-20','20-21:30'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE,fontSize:11.5}},
+  yAxis:{type:'value',name:'人次',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+  series:[{type:'bar',data:[8100,13500,14850,12150,8100,6750,4050],barWidth:'52%',
+    itemStyle:{color:function(q){return q.dataIndex===2?OCHRE:PINE;}},
+    label:{show:true,position:'top',color:SLATE,fontSize:10.5,formatter:function(v){return v.value.toLocaleString();}}}]
+});
+
+/* 昆明池 · 周内（模型） */
+make('chart-km-week',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:function(p){return p[0].name+'<br/>占全周 '+p[0].value+'%';}},baseTooltip),
+  grid:{left:48,right:20,top:24,bottom:36},
+  xAxis:{type:'category',data:['周一','周二','周三','周四','周五','周六','周日'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE}},
+  yAxis:{type:'value',name:'占比 %',max:26,nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+  series:[{type:'bar',data:[11,11,11,11,11,23,22],barWidth:'48%',
+    itemStyle:{color:function(q){return q.dataIndex>=5?OCHRE:PINE;}},
+    label:{show:true,position:'top',color:SLATE,fontSize:11}}]
+});
+
+/* 昆明池 · 月度（模型） */
+make('chart-km-month',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:function(p){var h=[6,13,7,10,12,7,8,8,7,12,5,5];var i=p[0].dataIndex;
+      return p[0].name+'<br/>'+p[0].value.toLocaleString()+' 人次（占比 '+h[i]+'%）';}},baseTooltip),
+  grid:{left:60,right:20,top:30,bottom:40},
+  xAxis:{type:'category',data:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE,fontSize:11.5}},
+  yAxis:{type:'value',name:'人次',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e',formatter:function(v){return v>=10000?(v/10000)+'万':v}}},
+  series:[{type:'bar',data:[348000,754000,406000,580000,696000,406000,464000,464000,406000,696000,290000,290000],
+    barWidth:'56%',itemStyle:{color:function(q){return [1,4,9].indexOf(q.dataIndex)>=0?OCHRE:PINE;}}}]
+});
+
+/* 法门寺 · 三年客流（纯客流） */
+make('chart-famen',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'}},baseTooltip),
+  grid:{left:52,right:24,top:36,bottom:36},
+  xAxis:{type:'category',data:['2023','2024','2025'],axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE}},
+  yAxis:{type:'value',name:'万人次',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+  series:[{type:'bar',data:[97.68,87,100],barWidth:'42%',itemStyle:{color:PINE},
+    label:{show:true,position:'top',color:PINE,fontSize:12,fontWeight:500}}]
+});
+
+/* 法门寺 · 日内时段（模型） */
+make('chart-fm-hour',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:function(p){var h=[22,28,22,18,10];var i=p[0].dataIndex;
+      return p[0].name+' 时<br/>'+p[0].value.toLocaleString()+' 人次（占比 '+h[i]+'%）';}},baseTooltip),
+  grid:{left:56,right:20,top:30,bottom:40},
+  xAxis:{type:'category',data:['8-10','10-12','12-14','14-16','16-18'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE}},
+  yAxis:{type:'value',name:'人次',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+  series:[{type:'bar',data:[4620,5880,4620,3780,2100],barWidth:'50%',
+    itemStyle:{color:function(q){return q.dataIndex===1?OCHRE:PINE;}},
+    label:{show:true,position:'top',color:SLATE,fontSize:11,formatter:function(v){return v.value.toLocaleString();}}}]
+});
+
+/* 法门寺 · 周内（模型） */
+make('chart-fm-week',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:function(p){return p[0].name+'<br/>占全周 '+p[0].value+'%';}},baseTooltip),
+  grid:{left:48,right:20,top:24,bottom:36},
+  xAxis:{type:'category',data:['周一','周二','周三','周四','周五','周六','周日'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE}},
+  yAxis:{type:'value',name:'占比 %',max:26,nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+  series:[{type:'bar',data:[11,11,11,11,11,23,22],barWidth:'48%',
+    itemStyle:{color:function(q){return q.dataIndex>=5?OCHRE:PINE;}},
+    label:{show:true,position:'top',color:SLATE,fontSize:11}}]
+});
+
+/* 法门寺 · 月度（模型） */
+make('chart-fm-month',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:function(p){var h=[5,14,6,9,12,6,8,8,6,13,7,6];var i=p[0].dataIndex;
+      return p[0].name+'<br/>'+p[0].value.toLocaleString()+' 人次（占比 '+h[i]+'%）';}},baseTooltip),
+  grid:{left:58,right:20,top:30,bottom:40},
+  xAxis:{type:'category',data:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE,fontSize:11.5}},
+  yAxis:{type:'value',name:'人次',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e',formatter:function(v){return v>=10000?(v/10000)+'万':v}}},
+  series:[{type:'bar',data:[50000,140000,60000,90000,120000,60000,80000,80000,60000,130000,70000,60000],
+    barWidth:'56%',itemStyle:{color:function(q){return [1,4,9].indexOf(q.dataIndex)>=0?OCHRE:PINE;}}}]
+});
+
+/* 法门寺 · 三年营收（双轴：收入+人均） */
+make('chart-fm-rev',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis'},baseTooltip),
+  legend:{data:['旅游收入','人均收入'],top:6,textStyle:{color:SLATE,fontSize:12},itemWidth:14,itemHeight:10},
+  grid:{left:56,right:58,top:48,bottom:36},
+  xAxis:{type:'category',data:['2023','2024','2025'],axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE}},
+  yAxis:[
+    {type:'value',name:'万元',nameTextStyle:{color:'#7c857e',fontSize:11},splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+    {type:'value',name:'元',nameTextStyle:{color:'#7c857e',fontSize:11},splitLine:{show:false},axisLabel:{color:'#7c857e'}}
+  ],
+  series:[
+    {name:'旅游收入',type:'bar',data:[7479.96,6300,5118],barWidth:'40%',itemStyle:{color:OCHRE},
+      label:{show:true,position:'top',color:OCHRE,fontSize:11}},
+    {name:'人均收入',type:'line',yAxisIndex:1,data:[76.58,72.41,51.18],smooth:true,
+      symbol:'circle',symbolSize:8,lineStyle:{color:PINE,width:2.5},itemStyle:{color:PINE}}
+  ]
+});
+
+/* 赳赳大秦节点 */
+make('chart-jiu',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'}},baseTooltip),
+  legend:{data:['观众','收入'],top:6,textStyle:{color:SLATE,fontSize:12},itemWidth:14,itemHeight:10},
+  grid:{left:52,right:56,top:48,bottom:52},
+  xAxis:{type:'category',data:['2024 国庆','2025 春节','2026 春节','2026 清明','2026 端午','2026 国庆'],
+    axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE,fontSize:11.5,interval:0}},
+  yAxis:[
+    {type:'value',name:'万人次',nameTextStyle:{color:'#7c857e',fontSize:11},splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e'}},
+    {type:'value',name:'万元',nameTextStyle:{color:'#7c857e',fontSize:11},splitLine:{show:false},axisLabel:{color:'#7c857e'}}
+  ],
+  series:[
+    {name:'观众',type:'bar',data:[2.01,2.76,3.6,1.2,1.2,3.51],barWidth:'40%',itemStyle:{color:PINE}},
+    {name:'收入',type:'line',yAxisIndex:1,data:[351.27,575.47,null,null,287.3,null],
+      connectNulls:false,symbol:'circle',symbolSize:8,lineStyle:{color:OCHRE,width:2.5},itemStyle:{color:OCHRE}}
+  ]
+});
+
+/* 容量测算 */
+make('chart-cap',{
+  textStyle:{fontFamily:FONT,color:INK},
+  tooltip:Object.assign({trigger:'axis',axisPointer:{type:'shadow'}},baseTooltip),
+  legend:{data:['小苗','大苗','催花苗'],top:6,textStyle:{color:SLATE,fontSize:12},itemWidth:14,itemHeight:10},
+  grid:{left:64,right:24,top:48,bottom:36},
+  xAxis:{type:'category',data:['500 ㎡','1000 ㎡','2000 ㎡'],axisLine:{lineStyle:{color:GRID}},axisLabel:{color:SLATE}},
+  yAxis:{type:'value',name:'株',nameTextStyle:{color:'#7c857e',fontSize:11},
+    splitLine:{lineStyle:{color:GRID}},axisLabel:{color:'#7c857e',formatter:function(v){return v>=10000?(v/10000)+'万':v}}},
+  series:[
+    {name:'小苗',type:'bar',data:[61750,123500,247000],itemStyle:{color:PINE_L}},
+    {name:'大苗',type:'bar',data:[16250,32500,65000],itemStyle:{color:PINE}},
+    {name:'催花苗',type:'bar',data:[13813,27625,55250],itemStyle:{color:OCHRE}}
+  ]
+});
+
+window.addEventListener('resize',function(){charts.forEach(function(c){c.resize();});});
+</script>
+</body>
+</html>
